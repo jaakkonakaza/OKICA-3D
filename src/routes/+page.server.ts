@@ -1,9 +1,10 @@
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
 import fs from 'fs';
 import path from 'path';
 import type { PageServerLoad } from './$types';
 import type { Data, DataPoint } from './types';
 import { env } from '$env/dynamic/private';
+import chromium from '@sparticuz/chromium-min';
 
 const COOKIE_PATH = path.resolve('okica-cookies.json');
 
@@ -38,7 +39,14 @@ const loadData = async (url: URL): Promise<Data | Error> => {
 
 	const { email, password, cardNumber } = credentials[apiKey] as Credentials;
 
-	const browser = await puppeteer.launch({ headless: true });
+	const browser = await puppeteer.launch({
+		args: [...chromium.args],
+		defaultViewport: chromium.defaultViewport,
+		executablePath: await chromium.executablePath(
+			`https://github.com/Sparticuz/chromium/releases/download/v123.0.1/chromium-v123.0.1-pack.tar`
+		),
+		headless: chromium.headless
+	});
 	const page = await browser.newPage();
 
 	try {
