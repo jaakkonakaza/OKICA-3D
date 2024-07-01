@@ -3,6 +3,9 @@
 	import Scene from './Scene.svelte';
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
+	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
+
+	injectSpeedInsights();
 
 	export let data: PageData;
 
