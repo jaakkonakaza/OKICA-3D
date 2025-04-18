@@ -1,24 +1,22 @@
 <script lang="ts">
 	import { Canvas } from '@threlte/core';
 	import Scene from './Scene.svelte';
-	import type { PageData } from './$types';
-	import { onMount } from 'svelte';
-	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
+	import { onMount, tick } from 'svelte';
+	import type { PageProps } from './$types';
 
-	injectSpeedInsights();
+	let { data }: PageProps = $props();
 
-	export let data: PageData;
+	let sceneComponent: Scene | null = $state(null);
 
-	let sceneComponent: Scene;
-
-	let errorMessage: string | undefined;
+	let isDragging = $state(false);
 
 	onMount(async () => {
-		const table = await data.table;
-		if ('message' in table) {
-			errorMessage = table.message;
-		} else {
-			sceneComponent.load(table);
+		const loaded = await data.data;
+
+		await tick();
+
+		if (sceneComponent) {
+			sceneComponent.load(loaded!);
 		}
 	});
 </script>
@@ -29,6 +27,13 @@
 		body {
 			margin: 0;
 			padding: 0;
+			background-color: #ffffff;
+		}
+
+		@media (prefers-color-scheme: dark) {
+			body {
+				background-color: #141114;
+			}
 		}
 		html {
 			user-select: none !important;
@@ -36,21 +41,31 @@
 	</style>
 </svelte:head>
 
-{#if errorMessage === undefined}
-	<div id="canvas">
-		<Canvas>
-			<Scene bind:this={sceneComponent} />
-		</Canvas>
-	</div>
-{:else}
-	<p>{errorMessage}</p>
-{/if}
+<div
+	id="canvas"
+	onpointerdown={() => {
+		isDragging = true;
+	}}
+	onpointerup={() => {
+		isDragging = false;
+	}}
+>
+	<Canvas>
+		<Scene bind:this={sceneComponent} {isDragging} />
+	</Canvas>
+</div>
 
 <style>
 	#canvas {
 		width: 100%;
-		height: 100svh;
+		height: 100vh;
 		padding: 0;
 		margin: 0;
+	}
+
+	@media (max-width: 768px) {
+		#canvas {
+			height: 100svh;
+		}
 	}
 </style>
