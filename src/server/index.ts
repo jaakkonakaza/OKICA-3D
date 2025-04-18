@@ -85,7 +85,7 @@ app.get('/data', async (c: Context) => {
 
 			await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
 
-			const cookies = await page.cookies([]);
+			const cookies = await page.cookies();
 			const allCookies = fs.existsSync(COOKIE_PATH)
 				? JSON.parse(fs.readFileSync(COOKIE_PATH).toString())
 				: {};

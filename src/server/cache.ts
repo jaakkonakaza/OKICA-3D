@@ -7,7 +7,8 @@ class MemoryCache {
 	private cache: Map<string, CacheEntry>;
 	private ttl: number;
 
-	constructor(ttl: number = 120000) { // Default 2 minutes in milliseconds
+	constructor(ttl: number = 120000) {
+		// Default 2 minutes in milliseconds
 		this.cache = new Map();
 		this.ttl = ttl;
 	}
