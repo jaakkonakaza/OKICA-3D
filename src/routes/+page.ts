@@ -5,7 +5,13 @@ export const load: PageLoad = async ({ fetch, url }) => {
 	const apiKey = url.searchParams.get('apiKey');
 
 	const data: Promise<Data> = apiKey
-		? fetch(`https://okica-api.nakaza.me/data?apiKey=${apiKey}`).then((r) => r.json())
+		? new Promise((resolve) => {
+				setTimeout(() => {
+					fetch(`https://okica-api.nakaza.me/data?apiKey=${apiKey}`)
+						.then((r) => r.json())
+						.then(resolve);
+				}, 4000);
+			})
 		: new Promise((resolve) =>
 				setTimeout(
 					() =>
