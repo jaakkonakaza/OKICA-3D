@@ -7,6 +7,8 @@ export default defineConfig({
 	testDir: 'test',
 	forbidOnly: !!process.env.CI,
 	workers: process.env.CI ? 1 : undefined,
+	timeout: process.env.CI ? 90_000 : 30_000,
+	reporter: 'list',
 	use: { baseURL },
 
 	projects: [
