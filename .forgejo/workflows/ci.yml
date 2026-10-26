@@ -1,0 +1,46 @@
+name: ci
+on: [push, pull_request]
+
+permissions: {}
+
+jobs:
+  check:
+    runs-on: docker
+    container:
+      image: git.nakaza.digital/jaakko/ci-base:8@sha256:8f5eac67b7439756d709f534c0304b40ce652a3cf9ab29bc723f7f3d800a9d9a
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - run: scripts/ci-install.sh bun
+      - run: bun install --frozen-lockfile
+      - run: bun run lint
+      - run: bun run check
+      - run: bun run test
+      - run: bun run build
+
+  e2e:
+    runs-on: docker
+    container:
+      image: git.nakaza.digital/jaakko/ci-base:8@sha256:8f5eac67b7439756d709f534c0304b40ce652a3cf9ab29bc723f7f3d800a9d9a
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - run: scripts/ci-install.sh bun
+      - run: bun install --frozen-lockfile
+      - run: bunx playwright install --with-deps chromium webkit
+      - run: bun run test:e2e
+        env:
+          CI: '1'
+
+  security:
+    runs-on: docker
+    container:
+      image: git.nakaza.digital/jaakko/ci-base:8@sha256:8f5eac67b7439756d709f534c0304b40ce652a3cf9ab29bc723f7f3d800a9d9a
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Known vulnerabilities in the lockfile
+        run: |
+          scripts/ci-install.sh osv-scanner
+          osv-scanner scan --lockfile bun.lock
+      - name: Committed secrets
+        run: |
+          scripts/ci-install.sh trivy
+          trivy fs --scanners secret --exit-code 1 --skip-dirs node_modules --skip-version-check .

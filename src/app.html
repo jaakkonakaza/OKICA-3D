@@ -1,10 +1,26 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 	<head>
 		<meta charset="utf-8" />
-		<meta property="og:image" content="%sveltekit.assets%/open-graph-image.png" />
 		<link rel="icon" type="image/svg+xml" href="%sveltekit.assets%/favicon.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: #ffffff;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				body {
+					background-color: #141114;
+				}
+			}
+
+			html {
+				user-select: none !important;
+			}
+		</style>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

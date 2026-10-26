@@ -1,38 +1,13 @@
-# create-svelte
+# OKICA 3D
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+A 3D visualizer for an OKICA transport card’s balance and points.
 
-## Creating a project
+`/demo` shows the card with sample data.
 
-If you're seeing this, you've probably already done this step. Congrats!
+Run locally with `bun install` and `bun run dev`. Copy `.env.example` to `.env` to configure accounts and an optional development user. `/healthz` is public.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+Production must sit behind the authentication proxy, which must replace the `Remote-User` header and prevent direct access to the app. That header selects the account in `OKICA_ACCOUNTS`, it is not independently verified by the app. `DEV_USER` is only used by the development server.
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+Run `bun run lint`, `bun run check`, `bun run test`, and `bun run test:e2e` before releasing. The browser tests build and start the production server.
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+The build uses `threlte-minify` to replace dynamic Three.js lookups with direct imports. Use built-in `<T.*>` components or `<T is={...}>`; the plugin does not support Threlte's `extend()` API.

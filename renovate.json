@@ -1,0 +1,22 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"description": "npm dependencies (bun.lock), the Dockerfile base images and the CI workflow actions. The pinned binaries in scripts/ci-install.sh carry checksums, so they are bumped by hand.",
+	"extends": ["config:recommended", ":disableDependencyDashboard"],
+	"enabledManagers": ["bun", "npm", "dockerfile", "github-actions"],
+	"timezone": "Asia/Tokyo",
+	"labels": ["renovate"],
+	"osvVulnerabilityAlerts": true,
+	"minimumReleaseAge": "3 days",
+	"packageRules": [
+		{
+			"description": "three and its type definitions move together, and so do the Threlte packages",
+			"matchPackageNames": ["three", "@types/three", "@threlte/**"],
+			"groupName": "three and Threlte"
+		},
+		{
+			"description": "TypeScript 7 is not supported by typescript-eslint, svelte-check or SvelteKit 3 yet",
+			"matchPackageNames": ["typescript"],
+			"allowedVersions": "<7"
+		}
+	]
+}
