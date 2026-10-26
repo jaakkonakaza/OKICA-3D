@@ -6,6 +6,7 @@ const baseURL = `http://127.0.0.1:${PORT}`;
 export default defineConfig({
 	testDir: 'test',
 	forbidOnly: !!process.env.CI,
+	workers: process.env.CI ? 1 : undefined,
 	use: { baseURL },
 
 	projects: [
