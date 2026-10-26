@@ -44,7 +44,8 @@ export const variables = defineEnvVars({
 		}
 	},
 	DEV_USER: {
-		description: 'Username to act as under `vite dev`, where no forward-auth gate sets Remote-User',
+		description:
+			'Username to act as under `vite dev`, where the authentication proxy is unavailable',
 		schema: (value) => (value === '' ? undefined : value)
 	}
 });

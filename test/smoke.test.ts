@@ -65,6 +65,11 @@ test('the card page needs the gate header', async ({ request }) => {
 	expect(response.headers()['cache-control']).toBe('private, no-store');
 });
 
+test('the card page ignores legacy identity headers', async ({ request }) => {
+	const response = await request.get('/', { headers: { 'Remote-User': 'jaakko' } });
+	expect(response.status()).toBe(401);
+});
+
 test('the health check answers without the gate header', async ({ request }) => {
 	const response = await request.get('/healthz');
 	expect(response.status()).toBe(200);
