@@ -2,17 +2,30 @@ import { defineConfig, devices } from '@playwright/test';
 
 const PORT = process.env.PLAYWRIGHT_PORT ?? '4173';
 const baseURL = `http://127.0.0.1:${PORT}`;
+const linuxCI = !!process.env.CI && process.platform === 'linux';
 
 export default defineConfig({
 	testDir: 'test',
 	forbidOnly: !!process.env.CI,
 	workers: process.env.CI ? 1 : undefined,
-	timeout: process.env.CI ? 90_000 : 30_000,
 	reporter: 'list',
 	use: { baseURL },
 
 	projects: [
-		{ name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+		{
+			name: 'chromium',
+			use: {
+				...devices['Desktop Chrome'],
+				...(linuxCI
+					? {
+							headless: false,
+							launchOptions: {
+								args: ['--use-gl=angle', '--use-angle=gl', '--ignore-gpu-blocklist']
+							}
+						}
+					: {})
+			}
+		},
 		{ name: 'webkit', use: { ...devices['Desktop Safari'] } }
 	],
 	webServer: {

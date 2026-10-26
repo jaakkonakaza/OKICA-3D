@@ -21,14 +21,18 @@ jobs:
     runs-on: docker
     container:
       image: git.nakaza.digital/jaakko/ci-base:8@sha256:8f5eac67b7439756d709f534c0304b40ce652a3cf9ab29bc723f7f3d800a9d9a
+      options: --shm-size=1g
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - run: scripts/ci-install.sh bun
       - run: bun install --frozen-lockfile
-      - run: bunx playwright install --with-deps chromium webkit
-      - run: bun run test:e2e
+      - run: |
+          bunx playwright install --with-deps chromium webkit
+          apt-get install -y --no-install-recommends xauth
+      - run: xvfb-run -a bun run test:e2e
         env:
           CI: '1'
+          LIBGL_ALWAYS_SOFTWARE: '1'
 
   security:
     runs-on: docker

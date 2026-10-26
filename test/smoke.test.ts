@@ -111,7 +111,7 @@ test('card values have a text equivalent with reduced motion', async ({ page }) 
 	await page.goto('/demo');
 	await expect(page).toHaveTitle('デモ | OKICA');
 	await expect(page.locator('#canvas')).toHaveAttribute('data-card-ready', 'true', {
-		timeout: process.env.CI ? 45_000 : 15_000
+		timeout: 15_000
 	});
 	const status = page.getByRole('status');
 	await expect(status).toContainText('OK001 7357 7357 7357', { timeout: 1000 });
